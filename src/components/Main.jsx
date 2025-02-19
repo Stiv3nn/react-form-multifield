@@ -1,4 +1,4 @@
-import {userState} from 'react';
+import {useState} from 'react';
 
 const materieScolastiche = [
     {
@@ -74,5 +74,122 @@ const initialFormData = {
 }
 
 export default function subjectsList() {
-    
+
+    // State dei post
+    const [bookPosts, setBookPosts] = useState(materieScolastiche);
+
+    // State del form
+    const [formData, setFormData] = useState(initialFormData);
+
+    // Funzione del contenuto del form
+    function handleFormData(e) {
+
+        setFormData((currentFormData) => ({
+            ...currentFormData,
+            [e.target.name]: e.target.value
+        }))
+    }
+
+    // Funzione dell'invio, submit
+    function handleSunbmit(e) {
+        e.preventDefault();
+        setBookPosts((currentBookPosts) => [...currentBookPosts,
+            {
+                id:
+                currentBookPosts.length === 0 ? 1 : currentBookPosts[currentBookPosts.length - 1].id + 1,
+                ...formData
+            }
+        ])
+        setFormData(initialFormData);
+    }
+
+    // Funzione del comando eliminazione post
+    function removeBook(id) {
+        const updateBook = bookPosts.filter((book) => {
+            return book.id !== id;
+        });
+        setBookPosts(updateBook);
+    }
+
+    return(
+
+    <>
+
+        {/* FORM */}
+        <h4>Form</h4>
+        <form class="books-form" onSubmit="handleSubmit">
+
+            {/* Nome libro */}
+            <input
+
+                type="text"
+                name="titolo"
+                onChange={handleFormData}
+                value={formData.titolo}
+                placeholder='Nome del libro'
+        
+            />
+
+            {/* Autore */}
+            <input
+
+                type="text"
+                name="autore"
+                onChange={handleFormData}
+                value={formData.autore}
+                placeholder='Nome Autore'
+
+            />
+
+          {/* Contenuto */}
+          <textarea
+
+                type="text"
+                name="contenuto"
+                onChange={handleFormData}
+                value={formData.contenuto}
+                placeholder='Contenuto del libro'
+
+            />  
+
+            {/* Categoria */}
+            <input
+
+                type="text"
+                name="categoria"
+                onChange={handleFormData}
+                value={formData.categoria}
+                placeholder='Categoria del post'
+
+            />
+
+            {/* Bottone del form  */}
+            <button>Aggiungi</button>
+
+        </form>
+
+        {/* Lista dei libri */}
+
+        <ul class="book-posts">
+            {
+                bookPosts.map((book) => (
+                    <li key ={book.id}>
+                        <h2>{book.titolo}</h2>
+                        <h3>{book.autore}</h3>
+                        <p>{book.contenuto}</p>
+                        <span>{book.categoria}</span>
+
+                        {/* Bottone di rimozione del libro */}
+
+                        <button class="remove-button" onClick={() => removePost(book.id)}>
+                            Elimina Post
+                        </button>
+                    </li>
+                ))
+            }
+
+        </ul>
+    </>
+  
+  )
 }
